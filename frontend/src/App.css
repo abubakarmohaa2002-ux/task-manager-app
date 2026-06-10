@@ -1,0 +1,12 @@
+/* Reset default spacing */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Basic app styling */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9fafb;
+}
