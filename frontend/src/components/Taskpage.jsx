@@ -16,7 +16,7 @@ const TaskPage = () => {
   const fetchAllTasks = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/tasks/",
+        "https://task-manager-app-1-e9px.onrender.com/api/tasks/",
         {
           headers: {
             "auth-token": token,
@@ -40,7 +40,7 @@ const TaskPage = () => {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/tasks/",
+        "https://task-manager-app-1-e9px.onrender.com/api/tasks/",
         { title, description },
         {
           headers: {
@@ -70,7 +70,7 @@ const TaskPage = () => {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/tasks/${editingTask._id}`,
+        `https://task-manager-app-1-e9px.onrender.com/api/tasks/${editingTask._id}`,
         { title, description },
         {
           headers: {
@@ -98,7 +98,7 @@ const TaskPage = () => {
 
     try {
       await axios.delete(
-        `http://localhost:5000/api/tasks/${id}`,
+        `https://task-manager-app-1-e9px.onrender.com/api/tasks/${id}`,
         {
           headers: {
             "auth-token": token,
