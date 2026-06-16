@@ -37,18 +37,6 @@
 
 ---
 
-## 📸 Screenshots
-
-### 🔐 Auth Pages
-| Login | Register |
-|-------|----------|
-| ![Login Placeholder](https://via.placeholder.com/400x250?text=Login+Page) | ![Register Placeholder](https://via.placeholder.com/400x250?text=Register+Page) |
-
-### ✅ Task Dashboard
-![Dashboard Placeholder](https://via.placeholder.com/800x450?text=Task+Manager+Dashboard)
-
----
-
 ## ⚙️ Installation & Setup
 
 ### 1️⃣ Clone the Repository
