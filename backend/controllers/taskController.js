@@ -7,7 +7,9 @@ export const createTaskController = async (req, res) => {
     const { title, description } = req.body;
 
     if (!title || !description) {
-      return res.status(400).json({ message: "All fields are required" });
+      return res.status(400).json({
+        message: "All fields are required",
+      });
     }
 
     const task = await Task.create({
@@ -16,13 +18,15 @@ export const createTaskController = async (req, res) => {
       user: req.user.id,
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       message: "Task created successfully",
       task,
     });
 
   } catch (error) {
-    res.status(500).json({ message: "Something went wrong" });
+    return res.status(500).json({
+      message: "Something went wrong",
+    });
   }
 };
 
@@ -33,10 +37,15 @@ export const updateTaskController = async (req, res) => {
     const { id } = req.params;
     const { title, description } = req.body;
 
-    const task = await Task.findById(id);
+    const task = await Task.findOne({
+      _id: id,
+      user: req.user.id,
+    });
 
     if (!task) {
-      return res.status(404).json({ message: "Task not found" });
+      return res.status(404).json({
+        message: "Task not found",
+      });
     }
 
     task.title = title || task.title;
@@ -44,13 +53,15 @@ export const updateTaskController = async (req, res) => {
 
     const updatedTask = await task.save();
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Task updated successfully",
       updatedTask,
     });
 
   } catch (error) {
-    res.status(500).json({ message: "Something went wrong" });
+    return res.status(500).json({
+      message: "Something went wrong",
+    });
   }
 };
 
@@ -60,20 +71,27 @@ export const deleteTaskController = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const task = await Task.findById(id);
+    const task = await Task.findOne({
+      _id: id,
+      user: req.user.id,
+    });
 
     if (!task) {
-      return res.status(404).json({ message: "Task not found" });
+      return res.status(404).json({
+        message: "Task not found",
+      });
     }
 
     await task.deleteOne();
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Task deleted successfully",
     });
 
   } catch (error) {
-    res.status(500).json({ message: "Something went wrong" });
+    return res.status(500).json({
+      message: "Something went wrong",
+    });
   }
 };
 
@@ -81,14 +99,18 @@ export const deleteTaskController = async (req, res) => {
 /* ================= GET ALL TASKS ================= */
 export const getAllTaskController = async (req, res) => {
   try {
-    const tasks = await Task.find({ user: req.user.id });
+    const tasks = await Task.find({
+      user: req.user.id,
+    });
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Tasks fetched successfully",
       tasks,
     });
 
   } catch (error) {
-    res.status(500).json({ message: "Something went wrong" });
+    return res.status(500).json({
+      message: "Something went wrong",
+    });
   }
 };
