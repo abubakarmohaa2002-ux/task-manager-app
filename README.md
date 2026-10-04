@@ -87,11 +87,40 @@ cd task-manager-app
 - `POST /api/auth/register` - Register a new user
 - `POST /api/auth/login` - Login and get JWT token
 
+Successful registration returns HTTP 201 with only
+`{"message":"User created successfully"}`. Successful login returns HTTP 200
+with `{"message":"User login successful","token":"<JWT>"}`.
+The frontend consumes the message and login token only, so neither response
+returns a user document, password hash, timestamps or database version fields.
+Registration still redirects to login rather than automatically signing in.
+
 ### Tasks (Protected)
 - `GET /api/tasks` - Get all tasks for the logged-in user
 - `POST /api/tasks` - Create a new task
 - `PUT /api/tasks/:id` - Update an existing task
 - `DELETE /api/tasks/:id` - Delete a task
+
+---
+
+## Authentication response regression tests
+
+Use Node.js 24 for the built-in test runner and `fetch`:
+
+```bash
+cd backend
+npm ci --ignore-scripts --no-audit --no-fund
+npm test
+```
+
+`backend/test/auth-response-privacy.test.js` exercises the real Express auth
+routes, bcrypt hashing/comparison and JWT signing/verification over loopback
+HTTP. It checks registration, successful login and incorrect-password rejection,
+including the absence of passwords, password hashes and extra response fields.
+Tests substitute in-memory persistence for `User.findOne` and `User.create`,
+generate a temporary signing key, and load the router from an empty temporary
+working directory so a developer's `.env` is not read. No MongoDB connection or
+deployed service is used. These are focused route regression tests, not MongoDB
+integration tests or browser/deployment tests.
 
 ---
 

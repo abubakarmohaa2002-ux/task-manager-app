@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon ./index.js"
+    "dev": "nodemon ./index.js",
+    "test": "node --test test/auth-response-privacy.test.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
