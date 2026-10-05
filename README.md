@@ -102,7 +102,7 @@ Registration still redirects to login rather than automatically signing in.
 
 ---
 
-## Authentication response regression tests
+## Backend regression tests
 
 Use Node.js 24 for the built-in test runner and `fetch`:
 
@@ -111,6 +111,10 @@ cd backend
 npm ci --ignore-scripts --no-audit --no-fund
 npm test
 ```
+
+`npm test` runs both files below in separate Node.js test processes.
+
+### Authentication response privacy
 
 `backend/test/auth-response-privacy.test.js` exercises the real Express auth
 routes, bcrypt hashing/comparison and JWT signing/verification over loopback
@@ -121,6 +125,37 @@ generate a temporary signing key, and load the router from an empty temporary
 working directory so a developer's `.env` is not read. No MongoDB connection or
 deployed service is used. These are focused route regression tests, not MongoDB
 integration tests or browser/deployment tests.
+
+### Authentication enforcement and task ownership
+
+`backend/test/task-permissions.test.js` sends HTTP requests through the real
+`/api` router, authentication middleware and task controllers. It registers and
+logs in two fixture users through the real auth routes. Persistence uses actual
+Mongoose models and a dedicated MongoDB 8.2.6 process with WiredTiger, started by
+the pinned `mongodb-memory-server` development dependency. No model methods are
+mocked in this file. The tests verify stored documents after permitted and denied
+requests, including ownership, contents, timestamps and database version fields.
+
+Covered cases:
+
+- Owner create/list/update/delete, including the resulting stored data.
+- Separate task lists for two users; cross-user update/delete return 404 without
+  changing stored data.
+- Missing, malformed, incorrectly signed and expired tokens return 401 for each
+  protected POST/GET/PUT/DELETE operation without changing stored data.
+- A submitted `user` ownership field cannot assign another owner during creation
+  or transfer ownership during an otherwise permitted update.
+
+Tests generate temporary credentials, signing keys and a database name, bind HTTP
+and MongoDB to TCP loopback (disabling Unix sockets on non-Windows systems), and
+remove the temporary database process/files when finished. They do not import
+the production startup module, read a developer's
+`.env`, accept an external database URI, or contact Render/Vercel/Atlas. The first
+run needs access to download the matching MongoDB binary from MongoDB's download
+service; later runs use its cache. A startup/download failure fails the suite;
+there is no silent skip or mocked-database fallback. Node.js 24 and an OS supported
+by the MongoDB binary are required. These local API/database integration tests do
+not establish browser behaviour or deployed database/configuration behaviour.
 
 ---
 
